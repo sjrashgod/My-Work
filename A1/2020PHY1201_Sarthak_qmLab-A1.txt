@@ -1,0 +1,59 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+#ENERGY:
+E=[]
+n=[]
+for i in range(1,21):
+    n.append(i)
+    E_n= (-13.6/(i**2))
+    E.append(E_n)
+
+for i in range(len(E)):
+    plt.axhline(y=E[i], xmin=0.1, xmax=0.8, color='g', linewidth=3, label='n= '+ str(n[i]))
+    plt.ylabel('Energy')
+    plt.title('Energy Level Diagram')
+    plt.legend()
+plt.grid()
+plt.show()
+
+m=9.1*10**(-31)
+e=-1.6*10**(-19)
+e_0=8.85*10**(-12)
+h_bar=1.054*10**(-34)
+
+#fcln
+def freq(p):
+
+    fcln= ((m * e**4)/(32* (np.pi)**3 * (e_0)**2 * (h_bar)**3))/ (10**p)**3
+    fqn= ((m * e**4)/(64* (np.pi)**3 * (e_0)**2 * (h_bar)**3)) * ((2*(10**p) - 1)/(((10**p)**2)*((10**p)-1)**2))
+    return fcln,fqn
+
+Q=[]
+C=[]
+p=0.5
+a,b=freq(p)
+Q.append(b)
+C.append(a)
+
+n=1
+while abs(a-b)>10**(-5):
+    n+=1
+    p+=0.5
+    a,b=freq(p)
+    Q.append(b)
+    C.append(a)
+N=[]
+for i in range(n):
+    N.append(10**i)
+df=abs(np.array(Q)-np.array(C))
+error=df/np.array(Q)
+
+plt.plot(np.log(np.array(N)),error,color = 'y')
+plt.title('Error Plot')
+plt.grid()
+plt.show()
+
+print(pd.DataFrame({'n':N,'QUANTUM FREQUENCY':Q,'CLASSICAL FREQUENCY':C,'ERROR':error}))
+
